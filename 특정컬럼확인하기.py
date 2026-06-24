@@ -7,7 +7,9 @@ df = pd.read_csv(file_path, encoding='cp949')
 
 
 region_mask = df["통합 분류1"].notna() & df["통합 분류1"].str.contains("지역")
-df_region = df[region_mask].copy() 
+# 지역 관련 뉴스만 추출
+df_region = df[region_mask].copy()
+# 복사본 생성
 
 df_region['상세지역'] = df_region['통합 분류1'].apply(
     lambda x: x.split('-')[-1].strip() if '-' in str(x) else x.strip()
@@ -28,6 +30,8 @@ df_region['키워드'] = df_region['키워드'].fillna('')
 from collections import Counter
 # 어떤 요소가 몇 개씩 들어있는지 계산하여 딕셔너리 형태로 반환
 
+# 키워드 칼럼에서 키워드 순위 10
+# 정의 순서 주의
 def get_top_10_keywords(series):
    
     all_text = " ".join(series.astype(str))    
@@ -46,12 +50,7 @@ summary_df = df_region.groupby('상세지역').agg(
 
 
 
-print("=== [콘솔 확인] 4. 상세지역별 통합 키워드 순위  ===")
-print(summary_df)
-print("\n----------------------------------------------------")
-print("데이터프레임 정보 및 타입 확인:")
-print(summary_df.info())
-print("====================================================\n")
+
 
 
 keyword_series = summary_df['키워드순']
@@ -105,6 +104,3 @@ print("=== [콘솔 확인] 통합 분류1 카테고리 시리즈 ===")
 print(category_counts)
 print("데이터 타입:", type(category_counts))
 print("====================================================\n")
-
-
-
